@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nicky.mapper.UsersDAO">
+    <resultMap id="BaseResultMap" type="com.nicky.domain.Users">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="birthday" property="birthday" jdbcType="DATE"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="SELECT_All_Column">
+        SELECT id, birthday, name, telephone
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nicky.domain.Users">
+        SELECT *
+        FROM users
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.nicky.domain.Users">
+        DELETE FROM users
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.nicky.domain.Users">
+        INSERT INTO users ( birthday, 
+          name, telephone )
+        VALUES ( #{birthday,jdbcType=DATE}, 
+          #{name,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR} )
+        <selectKey keyProperty="id" resultType="int">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+    <insert id="insertSelective" parameterType="com.nicky.domain.Users">
+        INSERT INTO users
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="birthday != null">
+                #{birthday,jdbcType=DATE},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        <selectKey keyProperty="id" resultType="int">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO users ( birthday, 
+          name, telephone )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (
+            #{item.birthday,jdbcType=DATE}, 
+            #{item.name,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.nicky.domain.Users">
+        UPDATE users
+        <set>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=DATE},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.nicky.domain.Users">
+        UPDATE users
+        SET birthday = #{birthday,jdbcType=DATE},
+            name = #{name,jdbcType=VARCHAR},
+            telephone = #{telephone,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

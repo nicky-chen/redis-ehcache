@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd"
+         updateCheck="false">
+
+    <!--  默认的管理策略
+    maxElementsOnDisk： 在磁盘上缓存的element的最大数目，默认值为0，表示不限制。
+    eternal:设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，
+    如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断。
+    diskPersistent： 是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。
+    diskExpiryThreadIntervalSeconds:对象检测线程运行时间间隔。标识对象状态（过期/持久化）的线程多长时间运行一次。
+    -->
+    <defaultCache maxElementsInMemory="10000"
+                  eternal="false"
+                  timeToIdleSeconds="3600"
+                  timeToLiveSeconds="3600"
+                  overflowToDisk="true"
+                  diskPersistent="false"
+                  diskExpiryThreadIntervalSeconds="120"
+                  memoryStoreEvictionPolicy="LRU"/>
+
+    <!-- 这里的 users 缓存空间是为了下面的 demo 做准备 -->
+    <cache
+            name="users"
+            eternal="false"
+            maxElementsInMemory="100"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            maxEntriesLocalHeap="200"
+            timeToLiveSeconds="5"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!-- 对象无过期，一个1000长度的队列，最近最少使用的对象被删除 -->
+    <cache name="userCache"
+           maxElementsInMemory="1000"
+           eternal="true"
+           overflowToDisk="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- 组播方式：multicastGroupPort需要保证与其他系统不重复，进行端口注册  -->
+    <!-- 若因未注册，配置了重复端口，造成权限缓存数据异常，请自行解决  -->
+    <!--<cacheManagerPeerProviderFactory-->
+            <!--class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"-->
+            <!--properties="peerDiscovery=automatic,-->
+                        <!--multicastGroupAddress=230.0.0.1,-->
+                        <!--multicastGroupPort=4546, timeToLive=1"/>-->
+
+    <!-- replicatePuts=true | false – 当一个新元素增加到缓存中的时候是否要复制到其他的peers. 默认是true。 -->
+    <!-- replicateUpdates=true | false – 当一个已经在缓存中存在的元素被覆盖时是否要进行复制。默认是true。 -->
+    <!-- replicateRemovals= true | false – 当元素移除的时候是否进行复制。默认是true。 -->
+    <!-- replicateAsynchronously=true | false – 复制方式是异步的（指定为true时）还是同步的（指定为false时）。默认是true。 -->
+    <!-- replicatePutsViaCopy=true | false – 当一个新增元素被拷贝到其他的cache中时是否进行复制指定为true时为复制，默认是true。 -->
+    <!-- replicateUpdatesViaCopy=true | false – 当一个元素被拷贝到其他的cache中时是否进行复制（指定为true时为复制），默认是true。 -->
+
+    <!--<cache name="webCache_LT"-->
+           <!--maxElementsInMemory="10000"-->
+           <!--eternal="false"-->
+           <!--overflowToDisk="false"-->
+           <!--timeToIdleSeconds="3600"-->
+           <!--timeToLiveSeconds="3600"-->
+           <!--memoryStoreEvictionPolicy="LRU">-->
+        <!--<cacheEventListenerFactory-->
+                <!--class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"-->
+                <!--properties="replicateRemovals=true"/>-->
+        <!--<bootstrapCacheLoaderFactory-->
+                <!--class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>-->
+    <!--</cache>-->
+
+    <!--<cache name="webCache_ST"-->
+           <!--maxElementsInMemory="1000"-->
+           <!--eternal="false"-->
+           <!--overflowToDisk="false"-->
+           <!--timeToIdleSeconds="300"-->
+           <!--timeToLiveSeconds="300"-->
+           <!--memoryStoreEvictionPolicy="LRU">-->
+        <!--<cacheEventListenerFactory-->
+                <!--class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"-->
+                <!--properties="replicateRemovals=true"/>-->
+        <!--<bootstrapCacheLoaderFactory-->
+                <!--class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>-->
+    <!--</cache>-->
+</ehcache>
