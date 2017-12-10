@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 缓存键自定义
+ * 缓存键自定义 可以用于修改默认缓存键规则
  *
  */
 public class BusinessCacheKeyGenerator extends DefaultKeyGenerator {
